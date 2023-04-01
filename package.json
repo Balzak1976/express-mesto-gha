@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon app.js",
     "start": "node app.js",
-    "lint": "npx eslint"
+    "lint": "npx eslint",
+    "lint-fix": "eslint . --fix"
   },
   "repository": {
     "type": "git",
