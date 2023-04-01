@@ -4,6 +4,7 @@
   "description": "express-mesto-gha",
   "main": "app.js",
   "scripts": {
+    "db": "mongod",
     "dev": "nodemon app.js",
     "start": "node app.js",
     "lint": "npx eslint",
@@ -20,6 +21,7 @@
   },
   "homepage": "https://github.com/Balzak1976/express-mesto-gha#readme",
   "dependencies": {
+    "body-parser": "^1.20.2",
     "eslint": "^8.37.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.27.5",

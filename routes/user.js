@@ -1,7 +1,11 @@
 const router = require('express').Router();
 
-const User = require('../models/user');
+const { getUsers, getUsersById, createUser } = require('../controllers/user');
 
-/* GET /users — возвращает всех пользователей
-GET /users/:userId - возвращает пользователя по _id
-POST /users — создаёт пользователя */
+router.get('/', getUsers);
+
+router.get('/:userId', getUsersById);
+
+router.post('/', createUser);
+
+module.exports = router;
