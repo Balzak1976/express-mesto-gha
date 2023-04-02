@@ -8,10 +8,10 @@ module.exports.getUsers = (req, res) => {
     });
 };
 
-module.exports.getUsersById = (req, res) => {
-  const { _id } = req.params;
+module.exports.getUserById = (req, res) => {
+  const { userId } = req.params;
 
-  User.findById(_id)
+  User.findById(userId)
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       res.status(500).send({ message: `Произошла ошибка: ${err}` });
@@ -19,11 +19,21 @@ module.exports.getUsersById = (req, res) => {
 };
 
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  console.log(req.body);
+  const { avatar, name, about } = req.body;
 
-  User.create({ name, about, avatar })
+  User.create({ avatar, name, about })
     .then((user) => res.send({ data: user }))
+    .catch((err) => {
+      res.status(500).send({ message: `Произошла ошибка: ${err}` });
+    });
+};
+
+module.exports.updateUser = (req, res) => {
+  const { _id: id } = req.user;
+  const { avatar, name, about } = req.body;
+
+  User.findByIdAndUpdate(id, { avatar, name, about })
+    .then((user) => res.send(user))
     .catch((err) => {
       res.status(500).send({ message: `Произошла ошибка: ${err}` });
     });

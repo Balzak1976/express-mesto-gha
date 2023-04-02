@@ -1,5 +1,35 @@
-{
-  "name": "MaxTest",
-  "about": "Информация о себе",
-  "avatar": "https://sportishka.com/uploads/posts/2022-11/1667486616_40-sportishka-com-p-neobichnie-mesta-dlya-puteshestvii-krasivo-40.jpg"
-}
+[
+  {
+    "_id": {
+      "$oid": "64287fc7ade4b04361906e3f"
+    },
+    "name": "MaxTest",
+    "about": "Информация о себе",
+    "avatar": "https://sportishka.com/uploads/posts/2022-11/1667486616_40-sportishka-com-p-neobichnie-mesta-dlya-puteshestvii-krasivo-40.jpg",
+    "__v": 0
+  },
+  {
+    "name": "Архыз",
+    "link": "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg"
+  },
+  {
+    "name": "Челябинская область",
+    "link": "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg"
+  },
+  {
+    "name": "Иваново",
+    "link": "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg"
+  },
+  {
+    "name": "Камчатка",
+    "link": "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg"
+  },
+  {
+    "name": "Холмогорский район",
+    "link": "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg"
+  },
+  {
+    "name": "Байкал",
+    "link": "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg"
+  }
+]
