@@ -1,11 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 
 const app = express();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 
 const { PORT = 3000 } = process.env;
 const db = 'mongodb://0.0.0.0:27017/mestodb';
