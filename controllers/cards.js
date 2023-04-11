@@ -1,12 +1,10 @@
 const Card = require('../models/card');
-const ValidationError = require('../errors/ValidationError');
+const { createValidationError } = require('../utils/utils');
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send(cards))
-    .catch((err) => {
-      res.status(500).send({ message: `Произошла ошибка: ${err}` });
-    });
+    .catch(next);
 };
 
 const createCard = (req, res, next) => {
@@ -15,23 +13,15 @@ const createCard = (req, res, next) => {
 
   Card.create({ owner, name, link })
     .then((card) => res.send(card))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return next(new ValidationError('Произошла ошибка валидации'));
-      }
-
-      return next(err);
-    });
+    .catch((err) => { createValidationError(err, next, 'Переданы некорректные данные при создании карточки.'); });
 };
 
-const delCard = (req, res) => {
+const delCard = (req, res, next) => {
   const { cardId } = req.params;
 
   Card.findByIdAndRemove(cardId)
     .then((card) => res.send(card))
-    .catch((err) => {
-      res.status(500).send({ message: `Произошла ошибка: ${err}` });
-    });
+    .catch(next);
 };
 
 const addLike = (req, res) => {
