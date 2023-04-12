@@ -3,6 +3,7 @@ const { createValidationError, isCardExist } = require('../utils/utils');
 
 const getCards = (req, res, next) => {
   Card.find({})
+    .populate(['owner', 'likes'])
     .then((cards) => res.send(cards))
     .catch(next);
 };
@@ -28,7 +29,8 @@ const likeCard = (req, res, next) => {
   const { _id } = req.user;
   const { cardId } = req.params;
 
-  Card.findByIdAndUpdate(cardId, { $addToSet: { likes: _id } }, { new: true, runValidators: true })
+  Card.findByIdAndUpdate(cardId, { $addToSet: { likes: _id } }, { new: true })
+    .populate(['owner', 'likes'])
     .then((card) => { isCardExist(card, res, 'Передан несуществующий _id карточки.'); })
     .catch((err) => { createValidationError(err, next, 'Переданы некорректные данные для постановки лайка.', 'CastError'); });
 };
@@ -37,7 +39,8 @@ const dislikeCard = (req, res, next) => {
   const { _id } = req.user;
   const { cardId } = req.params;
 
-  Card.findByIdAndUpdate(cardId, { $pull: { likes: _id } }, { new: true, runValidators: true })
+  Card.findByIdAndUpdate(cardId, { $pull: { likes: _id } }, { new: true })
+    .populate(['owner', 'likes'])
     .then((card) => { isCardExist(card, res, 'Передан несуществующий _id карточки.'); })
     .catch((err) => { createValidationError(err, next, 'Переданы некорректные данные для снятия лайка.', 'CastError'); });
 };
