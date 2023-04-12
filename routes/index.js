@@ -5,6 +5,9 @@ const cardsRoutes = require('./cards');
 
 routes.use('/users', userRoutes);
 routes.use('/cards', cardsRoutes);
+routes.use('*', (req, res) => {
+  res.status(404).send({ message: 'По указанному url ничего нет' });
+});
 
 routes.use((err, req, res, next) => {
   const { statusCode = 500, message, name } = err;

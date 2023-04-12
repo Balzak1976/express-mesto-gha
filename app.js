@@ -9,13 +9,11 @@ const app = express();
 
 app.use(express.json());
 
-const { PORT = 3000, MONGO_URL } = process.env;
+const { PORT = 3000, MONGO_URL = 'mongodb://0.0.0.0:27017/mestodb' } = process.env;
 
 mongoose
   .connect(MONGO_URL, {})
-  .then(() => {
-    console.log('Connect to DB');
-  })
+  .then(() => {console.log('Connect to DB')})
   .catch((err) => {
     console.log(err);
   });
