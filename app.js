@@ -22,23 +22,13 @@ mongoose
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '6435395abbde9a409726b391',
+    _id: '6435395abbde9a409726b392',
   };
 
   next();
 });
 
 app.use(routes);
-
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message, name } = err;
-  console.log('err: ', name);
-
-  res.status(statusCode).send({
-    message: statusCode === 500 ? 'На сервере произошла ошибка' : message,
-  });
-  next();
-});
 
 app.listen(PORT, () => {
   console.log(`Listen port:${PORT}`);

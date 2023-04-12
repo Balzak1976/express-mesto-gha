@@ -17,4 +17,12 @@ const isUserExist = (user, res) => {
   res.send(user);
 };
 
-module.exports = { createValidationError, isUserExist };
+const isCardExist = (card, res, message) => {
+  if (!card) {
+    throw new NotFoundError(message);
+  }
+
+  res.send(card);
+};
+
+module.exports = { createValidationError, isUserExist, isCardExist };
