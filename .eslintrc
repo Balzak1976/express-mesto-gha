@@ -1,23 +1,14 @@
 {
   "extends": "airbnb-base",
   "rules": {
-    "linebreak-style":"warn",
+    "linebreak-style": "warn",
     "no-console": "off",
-    
-    "import/order": [
-      "warn",
+    "no-underscore-dangle": [
+      "error",
       {
-        "groups": [
-          "builtin",
-          "external",
-          "internal",
-          "parent",
-          "sibling",
-          "index",
-          "object",
-          "type"
-        ],
-        "newlines-between": "always-and-inside-groups"
+        "allow": [
+          "_id"
+        ]
       }
     ]
   }

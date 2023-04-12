@@ -1,22 +1,18 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-
-dotenv.config();
 const routes = require('./routes/index');
 
-const app = express();
+dotenv.config();
 
-app.use(express.json());
+const app = express();
 
 const { PORT = 3000, MONGO_URL = 'mongodb://0.0.0.0:27017/mestodb' } = process.env;
 
 mongoose
   .connect(MONGO_URL, {})
-  .then(() => {console.log('Connect to DB')})
-  .catch((err) => {
-    console.log(err);
-  });
+  .then(() => { console.log('Connect to DB'); })
+  .catch((err) => { console.log(err); });
 
 app.use((req, res, next) => {
   req.user = {

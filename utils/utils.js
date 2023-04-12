@@ -3,10 +3,10 @@ const NotFoundError = require('../errors/NotFoundError');
 
 const createValidationError = (err, next, message, errName = 'ValidationError') => {
   if (err.name === errName) {
-    return next(new ValidationError(message));
+    next(new ValidationError(message));
+  } else {
+    next(err);
   }
-
-  return next(err);
 };
 
 const isUserExist = (user, res) => {

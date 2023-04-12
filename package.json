@@ -14,14 +14,13 @@
     "type": "git",
     "url": "git+https://github.com/Balzak1976/express-mesto-gha.git"
   },
-  "author": "",
+  "author": "Max Skorokhodov",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Balzak1976/express-mesto-gha/issues"
   },
   "homepage": "https://github.com/Balzak1976/express-mesto-gha#readme",
   "dependencies": {
-    "body-parser": "^1.20.2",
     "dotenv": "^16.0.3",
     "eslint": "^8.37.0",
     "eslint-config-airbnb-base": "^15.0.0",

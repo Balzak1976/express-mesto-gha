@@ -11,11 +11,12 @@ routes.use('*', (req, res) => {
 
 routes.use((err, req, res, next) => {
   const { statusCode = 500, message, name } = err;
+  console.log('errName: ', name);
 
   res.status(statusCode).send({
     message: statusCode === 500
       ? 'На сервере произошла ошибка'
-      : `${message} 'errName: '${name}`,
+      : message,
   });
 
   next();
