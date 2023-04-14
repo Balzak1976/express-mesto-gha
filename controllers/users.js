@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const { createValidationError, isUserExist } = require('../utils/utils');
+const { handleNotFoundError, handleCastError } = require('../errors/handlers');
 
 const getUsers = (req, res, next) => {
   User.find({})
@@ -11,8 +12,16 @@ const getUserById = (req, res, next) => {
   const { userId } = req.params;
 
   User.findById(userId)
-    .then((user) => { isUserExist(user, res); })
-    .catch((err) => { createValidationError(err, next, 'Невалидный id', 'CastError'); });
+    .then((user) => {
+      handleNotFoundError(
+        user,
+        res,
+        'Пользователь по указанному _id не найден.',
+      );
+    })
+    .catch((err) => {
+      handleCastError(err, next, 'Невалидный id', 'CastError');
+    });
 };
 
 const createUser = (req, res, next) => {
@@ -20,7 +29,13 @@ const createUser = (req, res, next) => {
 
   User.create({ avatar, name, about })
     .then((user) => res.send(user))
-    .catch((err) => { createValidationError(err, next, 'Переданы некорректные данные при создании пользователя.'); });
+    .catch((err) => {
+      createValidationError(
+        err,
+        next,
+        'Переданы некорректные данные при создании пользователя.',
+      );
+    });
 };
 
 const updateUser = (req, res, next) => {
@@ -32,8 +47,16 @@ const updateUser = (req, res, next) => {
     { name, about },
     { new: true, runValidators: true },
   )
-    .then((user) => { isUserExist(user, res); })
-    .catch((err) => { createValidationError(err, next, 'Переданы некорректные данные при обновлении профиля.'); });
+    .then((user) => {
+      isUserExist(user, res);
+    })
+    .catch((err) => {
+      createValidationError(
+        err,
+        next,
+        'Переданы некорректные данные при обновлении профиля.',
+      );
+    });
 };
 
 const updateAvatar = (req, res, next) => {
@@ -41,8 +64,16 @@ const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(id, { avatar }, { new: true, runValidators: true })
-    .then((user) => { isUserExist(user, res); })
-    .catch((err) => { createValidationError(err, next, 'Переданы некорректные данные при обновлении аватара.'); });
+    .then((user) => {
+      isUserExist(user, res);
+    })
+    .catch((err) => {
+      createValidationError(
+        err,
+        next,
+        'Переданы некорректные данные при обновлении аватара.',
+      );
+    });
 };
 
 module.exports = {
