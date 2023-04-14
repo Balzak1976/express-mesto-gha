@@ -7,12 +7,12 @@ dotenv.config();
 
 const app = express();
 
-const { PORT = 3000, MONGO_URL = 'mongodb://0.0.0.0:27017/mestodb' } = process.env;
+const {
+  PORT = 3000,
+  MONGO_URL = 'mongodb://0.0.0.0:27017/mestodb',
+} = process.env;
 
-mongoose
-  .connect(MONGO_URL, {})
-  .then(() => { console.log('Connect to DB'); })
-  .catch((err) => { console.log(err); });
+mongoose.connect(MONGO_URL, {});
 
 app.use((req, res, next) => {
   req.user = {
