@@ -4,7 +4,6 @@
   "description": "express-mesto-gha",
   "main": "app.js",
   "scripts": {
-    "db": "mongod",
     "dev": "nodemon app.js",
     "start": "node app.js",
     "lint": "npx eslint",

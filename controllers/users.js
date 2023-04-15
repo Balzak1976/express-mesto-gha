@@ -1,5 +1,10 @@
+const http2 = require('node:http2');
+const { handleNotFoundError } = require('../errors/handleNotFoundError');
+const CastError = require('../errors/CastError');
+const ValidationError = require('../errors/ValidationError');
 const User = require('../models/user');
-const { createValidationError, isUserExist } = require('../utils/utils');
+
+const CREATED = http2.constants.HTTP_STATUS_CREATED; // 201
 
 const getUsers = (req, res, next) => {
   User.find({})
@@ -11,16 +16,34 @@ const getUserById = (req, res, next) => {
   const { userId } = req.params;
 
   User.findById(userId)
-    .then((user) => { isUserExist(user, res); })
-    .catch((err) => { createValidationError(err, next, 'Невалидный id', 'CastError'); });
+    .then((user) => {
+      handleNotFoundError(user, res, 'Пользователь по указанному _id не найден.');
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new CastError('Невалидный _id пользователя'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 const createUser = (req, res, next) => {
   const { avatar, name, about } = req.body;
 
   User.create({ avatar, name, about })
-    .then((user) => res.send(user))
-    .catch((err) => { createValidationError(err, next, 'Переданы некорректные данные при создании пользователя.'); });
+    .then((user) => res.status(CREATED).send(user))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(
+          new ValidationError(
+            'Переданы некорректные данные при создании пользователя.',
+          ),
+        );
+      } else {
+        next(err);
+      }
+    });
 };
 
 const updateUser = (req, res, next) => {
@@ -32,8 +55,24 @@ const updateUser = (req, res, next) => {
     { name, about },
     { new: true, runValidators: true },
   )
-    .then((user) => { isUserExist(user, res); })
-    .catch((err) => { createValidationError(err, next, 'Переданы некорректные данные при обновлении профиля.'); });
+    .then((user) => {
+      handleNotFoundError(
+        user,
+        res,
+        'Пользователь по указанному _id не найден.',
+      );
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(
+          new ValidationError(
+            'Переданы некорректные данные при обновлении профиля.',
+          ),
+        );
+      } else {
+        next(err);
+      }
+    });
 };
 
 const updateAvatar = (req, res, next) => {
@@ -41,8 +80,24 @@ const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(id, { avatar }, { new: true, runValidators: true })
-    .then((user) => { isUserExist(user, res); })
-    .catch((err) => { createValidationError(err, next, 'Переданы некорректные данные при обновлении аватара.'); });
+    .then((user) => {
+      handleNotFoundError(
+        user,
+        res,
+        'Пользователь по указанному _id не найден.',
+      );
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(
+          new ValidationError(
+            'Переданы некорректные данные при обновлении аватара.',
+          ),
+        );
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports = {
