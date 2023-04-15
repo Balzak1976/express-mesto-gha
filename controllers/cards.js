@@ -1,5 +1,10 @@
+const http2 = require('node:http2');
+const { handleNotFoundError } = require('../errors/handleNotFoundError');
+const CastError = require('../errors/CastError');
+const ValidationError = require('../errors/ValidationError');
 const Card = require('../models/card');
-const { createValidationError, isCardExist } = require('../utils/utils');
+
+const CREATED = http2.constants.HTTP_STATUS_CREATED; // 201
 
 const getCards = (req, res, next) => {
   Card.find({})
@@ -13,16 +18,28 @@ const createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({ owner, name, link })
-    .then((card) => res.send(card))
-    .catch((err) => { createValidationError(err, next, 'Переданы некорректные данные при создании карточки.'); });
+    .then((card) => res.status(CREATED).send(card))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new ValidationError('Переданы некорректные данные при создании карточки.'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 const delCard = (req, res, next) => {
   const { cardId } = req.params;
 
   Card.findByIdAndRemove(cardId)
-    .then((card) => { isCardExist(card, res, 'Карточка с указанным _id не найдена.'); })
-    .catch((err) => { createValidationError(err, next, 'Передан некорректный _id карточки', 'CastError'); });
+    .then((card) => { handleNotFoundError(card, res, 'Карточка с указанным _id не найдена.'); })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new CastError('Передан некорректный _id карточки'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 const likeCard = (req, res, next) => {
@@ -31,8 +48,14 @@ const likeCard = (req, res, next) => {
 
   Card.findByIdAndUpdate(cardId, { $addToSet: { likes: _id } }, { new: true })
     .populate(['owner', 'likes'])
-    .then((card) => { isCardExist(card, res, 'Передан несуществующий _id карточки.'); })
-    .catch((err) => { createValidationError(err, next, 'Переданы некорректные данные для постановки лайка.', 'CastError'); });
+    .then((card) => { handleNotFoundError(card, res, 'Передан несуществующий _id карточки.'); })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new CastError('Переданы некорректные данные для постановки лайка.'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 const dislikeCard = (req, res, next) => {
@@ -41,8 +64,14 @@ const dislikeCard = (req, res, next) => {
 
   Card.findByIdAndUpdate(cardId, { $pull: { likes: _id } }, { new: true })
     .populate(['owner', 'likes'])
-    .then((card) => { isCardExist(card, res, 'Передан несуществующий _id карточки.'); })
-    .catch((err) => { createValidationError(err, next, 'Переданы некорректные данные для снятия лайка.', 'CastError'); });
+    .then((card) => { handleNotFoundError(card, res, 'Передан несуществующий _id карточки.'); })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new CastError('Переданы некорректные данные для снятия лайка.'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports = {
