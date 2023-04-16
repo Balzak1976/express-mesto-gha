@@ -25,5 +25,5 @@ app.use((req, res, next) => {
 app.use(routes);
 
 app.listen(PORT, () => {
-  console.log(`Listen port:${PORT}`);
+  // console.log(`Listen port:${PORT}`);
 });

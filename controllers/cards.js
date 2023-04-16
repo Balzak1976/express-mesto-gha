@@ -1,10 +1,9 @@
 const http2 = require('node:http2');
 const { handleNotFoundError } = require('../errors/handleNotFoundError');
-const CastError = require('../errors/CastError');
-const ValidationError = require('../errors/ValidationError');
 const Card = require('../models/card');
 
 const CREATED = http2.constants.HTTP_STATUS_CREATED; // 201
+const BAD_REQUEST = http2.constants.HTTP_STATUS_BAD_REQUEST; // 400
 
 const getCards = (req, res, next) => {
   Card.find({})
@@ -21,7 +20,7 @@ const createCard = (req, res, next) => {
     .then((card) => res.status(CREATED).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ValidationError('Переданы некорректные данные при создании карточки.'));
+        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании карточки.' });
       } else {
         next(err);
       }
@@ -35,7 +34,7 @@ const delCard = (req, res, next) => {
     .then((card) => { handleNotFoundError(card, res, 'Карточка с указанным _id не найдена.'); })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new CastError('Передан некорректный _id карточки'));
+        res.status(BAD_REQUEST).send({ message: 'Передан некорректный _id карточки' });
       } else {
         next(err);
       }
@@ -51,7 +50,7 @@ const likeCard = (req, res, next) => {
     .then((card) => { handleNotFoundError(card, res, 'Передан несуществующий _id карточки.'); })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new CastError('Переданы некорректные данные для постановки лайка.'));
+        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные для постановки лайка.' });
       } else {
         next(err);
       }
@@ -67,7 +66,7 @@ const dislikeCard = (req, res, next) => {
     .then((card) => { handleNotFoundError(card, res, 'Передан несуществующий _id карточки.'); })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new CastError('Переданы некорректные данные для снятия лайка.'));
+        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные для снятия лайка.' });
       } else {
         next(err);
       }
