@@ -14,5 +14,5 @@ node_modules
 .idea
 .vscode
 
-# testing data
-test.json
+# Envaerment file
+.env
