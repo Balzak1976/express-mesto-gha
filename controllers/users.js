@@ -1,10 +1,9 @@
 const http2 = require('node:http2');
 const { handleNotFoundError } = require('../errors/handleNotFoundError');
-const CastError = require('../errors/CastError');
-const ValidationError = require('../errors/ValidationError');
 const User = require('../models/user');
 
 const CREATED = http2.constants.HTTP_STATUS_CREATED; // 201
+const BAD_REQUEST = http2.constants.HTTP_STATUS_BAD_REQUEST; // 400
 
 const getUsers = (req, res, next) => {
   User.find({})
@@ -21,7 +20,7 @@ const getUserById = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new CastError('Невалидный _id пользователя'));
+        res.status(BAD_REQUEST).send({ message: 'Невалидный _id пользователя' });
       } else {
         next(err);
       }
@@ -35,11 +34,7 @@ const createUser = (req, res, next) => {
     .then((user) => res.status(CREATED).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(
-          new ValidationError(
-            'Переданы некорректные данные при создании пользователя.',
-          ),
-        );
+        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании пользователя.' });
       } else {
         next(err);
       }
@@ -64,11 +59,7 @@ const updateUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(
-          new ValidationError(
-            'Переданы некорректные данные при обновлении профиля.',
-          ),
-        );
+        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
       } else {
         next(err);
       }
@@ -89,11 +80,7 @@ const updateAvatar = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(
-          new ValidationError(
-            'Переданы некорректные данные при обновлении аватара.',
-          ),
-        );
+        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении аватара.' });
       } else {
         next(err);
       }

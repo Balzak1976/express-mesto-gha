@@ -8,8 +8,7 @@ const doesUrlExist = (req, res) => {
 };
 
 const handleErrors = (err, req, res, next) => {
-  const { statusCode = SERVER_ERROR, message, name } = err;
-  console.log('errName: ', name);
+  const { statusCode = SERVER_ERROR, message } = err;
 
   res.status(statusCode).send({
     message: statusCode === SERVER_ERROR
