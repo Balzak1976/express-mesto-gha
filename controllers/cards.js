@@ -44,37 +44,36 @@ const delCard = (req, res, next) => {
     });
 };
 
-const likeCard = (req, res, next) => {
-  const { _id } = req.user;
-  const { cardId } = req.params;
+function likeDislikeCard(isLike) {
+  return (req, res, next) => {
+    const updateOperator = isLike
+      ? { $addToSet: { likes: req.user._id } }
+      : { $pull: { likes: req.user._id } };
 
-  Card.findByIdAndUpdate(cardId, { $addToSet: { likes: _id } }, { new: true })
-    .populate(['owner', 'likes'])
-    .then((card) => { handleNotFoundError(card, res, 'Передан несуществующий _id карточки.'); })
-    .catch((err) => {
-      if (err instanceof CastError) {
-        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные для постановки лайка.' });
-      } else {
-        next(err);
-      }
-    });
-};
+    const errMessage = `Переданы некорректные данные для ${
+      isLike ? 'постановки лайка' : 'снятия лайка'
+    }.`;
 
-const dislikeCard = (req, res, next) => {
-  const { _id } = req.user;
-  const { cardId } = req.params;
+    Card.findByIdAndUpdate(req.params.cardId, updateOperator, { new: true })
+      .populate(['owner', 'likes'])
+      .then((card) => {
+        handleNotFoundError(card, res, 'Передан несуществующий _id карточки.');
+      })
+      .catch((err) => {
+        if (err instanceof CastError) {
+          res.status(BAD_REQUEST).send({
+            message: errMessage,
+          });
+        } else {
+          next(err);
+        }
+      });
+  };
+}
 
-  Card.findByIdAndUpdate(cardId, { $pull: { likes: _id } }, { new: true })
-    .populate(['owner', 'likes'])
-    .then((card) => { handleNotFoundError(card, res, 'Передан несуществующий _id карточки.'); })
-    .catch((err) => {
-      if (err instanceof CastError) {
-        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные для снятия лайка.' });
-      } else {
-        next(err);
-      }
-    });
-};
+const likeCard = likeDislikeCard(true);
+
+const dislikeCard = likeDislikeCard(false);
 
 module.exports = {
   getCards,
