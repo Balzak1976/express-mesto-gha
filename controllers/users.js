@@ -44,51 +44,32 @@ const createUser = (req, res, next) => {
     });
 };
 
-const updateUser = (req, res, next) => {
-  const { _id: id } = req.user;
-  const { name, about } = req.body;
-
-  User.findByIdAndUpdate(
-    id,
-    { name, about },
-    { new: true, runValidators: true },
-  )
-    .then((user) => {
-      handleNotFoundError(
-        user,
-        res,
-        'Пользователь по указанному _id не найден.',
-      );
+function updateUserById(errMessage) {
+  return (req, res, next) => {
+    User.findByIdAndUpdate(req.user._id, req.body, {
+      new: true,
+      runValidators: true,
     })
-    .catch((err) => {
-      if (err instanceof ValidationError) {
-        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
-      } else {
-        next(err);
-      }
-    });
-};
+      .then((user) => {
+        handleNotFoundError(
+          user,
+          res,
+          'Пользователь по указанному _id не найден.',
+        );
+      })
+      .catch((err) => {
+        if (err instanceof ValidationError) {
+          res.status(BAD_REQUEST).send({ message: errMessage });
+        } else {
+          next(err);
+        }
+      });
+  };
+}
 
-const updateAvatar = (req, res, next) => {
-  const { _id: id } = req.user;
-  const { avatar } = req.body;
+const updateUser = updateUserById('Переданы некорректные данные при обновлении профиля.');
 
-  User.findByIdAndUpdate(id, { avatar }, { new: true, runValidators: true })
-    .then((user) => {
-      handleNotFoundError(
-        user,
-        res,
-        'Пользователь по указанному _id не найден.',
-      );
-    })
-    .catch((err) => {
-      if (err instanceof ValidationError) {
-        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении аватара.' });
-      } else {
-        next(err);
-      }
-    });
-};
+const updateAvatar = updateUserById('Переданы некорректные данные при обновлении аватара.');
 
 module.exports = {
   getUsers,
