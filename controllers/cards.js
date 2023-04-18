@@ -40,43 +40,57 @@ const delCard = (req, res, next) => {
     .then((card) => { handleNotFoundError(card, res, 'Карточка с указанным _id не найдена.'); })
     .catch((err) => {
       if (err instanceof CastError) {
-        res.status(BAD_REQUEST).send({ message: 'Передан некорректный _id карточки' });
+        next({
+          statusCode: BAD_REQUEST,
+          message: 'Передан некорректный _id карточки',
+        });
       } else {
         next(err);
       }
     });
 };
 
-function likeDislikeCard(isLike) {
-  return (req, res, next) => {
-    const updateOperator = isLike
-      ? { $addToSet: { likes: req.user._id } }
-      : { $pull: { likes: req.user._id } };
+const likeCard = (req, res, next) => {
+  const { _id } = req.user;
+  const { cardId } = req.params;
 
-    const errMessage = `Переданы некорректные данные для ${
-      isLike ? 'постановки лайка' : 'снятия лайка'
-    }.`;
+  Card.findByIdAndUpdate(cardId, { $addToSet: { likes: _id } }, { new: true })
+    .populate(['owner', 'likes'])
+    .then((card) => {
+      handleNotFoundError(card, res, 'Передан несуществующий _id карточки.');
+    })
+    .catch((err) => {
+      if (err instanceof CastError) {
+        next({
+          statusCode: BAD_REQUEST,
+          message: 'Переданы некорректные данные для постановки лайка.',
+        });
+      } else {
+        next(err);
+      }
+    });
+};
 
-    Card.findByIdAndUpdate(req.params.cardId, updateOperator, { new: true })
-      .populate(['owner', 'likes'])
-      .then((card) => {
-        handleNotFoundError(card, res, 'Передан несуществующий _id карточки.');
-      })
-      .catch((err) => {
-        if (err instanceof CastError) {
-          res.status(BAD_REQUEST).send({
-            message: errMessage,
-          });
-        } else {
-          next(err);
-        }
-      });
-  };
-}
+const dislikeCard = (req, res, next) => {
+  const { _id } = req.user;
+  const { cardId } = req.params;
 
-const likeCard = likeDislikeCard(true);
-
-const dislikeCard = likeDislikeCard(false);
+  Card.findByIdAndUpdate(cardId, { $pull: { likes: _id } }, { new: true })
+    .populate(['owner', 'likes'])
+    .then((card) => {
+      handleNotFoundError(card, res, 'Передан несуществующий _id карточки.');
+    })
+    .catch((err) => {
+      if (err instanceof CastError) {
+        next({
+          statusCode: BAD_REQUEST,
+          message: 'Переданы некорректные данные для снятия лайка.',
+        });
+      } else {
+        next(err);
+      }
+    });
+};
 
 module.exports = {
   getCards,
