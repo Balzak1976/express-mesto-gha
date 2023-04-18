@@ -23,7 +23,10 @@ const getUserById = (req, res, next) => {
     })
     .catch((err) => {
       if (err instanceof CastError) {
-        res.status(BAD_REQUEST).send({ message: 'Невалидный _id пользователя' });
+        next({
+          statusCode: BAD_REQUEST,
+          message: 'Невалидный _id пользователя',
+        });
       } else {
         next(err);
       }
@@ -37,7 +40,10 @@ const createUser = (req, res, next) => {
     .then((user) => res.status(CREATED).send(user))
     .catch((err) => {
       if (err instanceof ValidationError) {
-        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании пользователя.' });
+        next({
+          statusCode: BAD_REQUEST,
+          message: 'Переданы некорректные данные при создании пользователя.',
+        });
       } else {
         next(err);
       }
