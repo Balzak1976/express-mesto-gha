@@ -1,3 +1,7 @@
+# Ignore master key for decrypting credentials and more.
+.env
+INFO.md
+
 # Logs
 logs
 *.log
@@ -14,5 +18,3 @@ node_modules
 .idea
 .vscode
 
-# Envaerment file
-.env

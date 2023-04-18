@@ -23,7 +23,10 @@ const getUserById = (req, res, next) => {
     })
     .catch((err) => {
       if (err instanceof CastError) {
-        res.status(BAD_REQUEST).send({ message: 'Невалидный _id пользователя' });
+        next({
+          statusCode: BAD_REQUEST,
+          message: 'Невалидный _id пользователя',
+        });
       } else {
         next(err);
       }
@@ -37,39 +40,67 @@ const createUser = (req, res, next) => {
     .then((user) => res.status(CREATED).send(user))
     .catch((err) => {
       if (err instanceof ValidationError) {
-        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании пользователя.' });
+        next({
+          statusCode: BAD_REQUEST,
+          message: 'Переданы некорректные данные при создании пользователя.',
+        });
       } else {
         next(err);
       }
     });
 };
 
-function updateUserById(errMessage) {
-  return (req, res, next) => {
-    User.findByIdAndUpdate(req.user._id, req.body, {
-      new: true,
-      runValidators: true,
+const updateUser = (req, res, next) => {
+  const { _id: id } = req.user;
+  const { name, about } = req.body;
+
+  User.findByIdAndUpdate(
+    id,
+    { name, about },
+    { new: true, runValidators: true },
+  )
+    .then((user) => {
+      handleNotFoundError(
+        user,
+        res,
+        'Пользователь по указанному _id не найден.',
+      );
     })
-      .then((user) => {
-        handleNotFoundError(
-          user,
-          res,
-          'Пользователь по указанному _id не найден.',
-        );
-      })
-      .catch((err) => {
-        if (err instanceof ValidationError) {
-          res.status(BAD_REQUEST).send({ message: errMessage });
-        } else {
-          next(err);
-        }
-      });
-  };
-}
+    .catch((err) => {
+      if (err instanceof ValidationError) {
+        next({
+          statusCode: BAD_REQUEST,
+          message: 'Переданы некорректные данные при обновлении профиля.',
+        });
+      } else {
+        next(err);
+      }
+    });
+};
 
-const updateUser = updateUserById('Переданы некорректные данные при обновлении профиля.');
+const updateAvatar = (req, res, next) => {
+  const { _id: id } = req.user;
+  const { avatar } = req.body;
 
-const updateAvatar = updateUserById('Переданы некорректные данные при обновлении аватара.');
+  User.findByIdAndUpdate(id, { avatar }, { new: true, runValidators: true })
+    .then((user) => {
+      handleNotFoundError(
+        user,
+        res,
+        'Пользователь по указанному _id не найден.',
+      );
+    })
+    .catch((err) => {
+      if (err instanceof ValidationError) {
+        next({
+          statusCode: BAD_REQUEST,
+          message: 'Переданы некорректные данные при обновлении аватара.',
+        });
+      } else {
+        next(err);
+      }
+    });
+};
 
 module.exports = {
   getUsers,
