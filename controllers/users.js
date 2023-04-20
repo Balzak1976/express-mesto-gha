@@ -3,10 +3,12 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const { handleNotFoundError } = require('../errors/handleNotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 const User = require('../models/user');
 
 const { ValidationError, CastError } = mongoose.Error;
 
+const OK = http2.constants.HTTP_STATUS_OK; // 200
 const CREATED = http2.constants.HTTP_STATUS_CREATED; // 201
 
 const getUsers = (req, res, next) => {
@@ -98,10 +100,40 @@ const updateAvatar = (req, res, next) => {
     });
 };
 
+const login = (req, res, next) => {
+  const { email, password } = req.body;
+
+  User.findOne({ email })
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
+      }
+
+      return bcrypt.compare(password, user.password);
+    })
+    .then((matched) => {
+      if (!matched) {
+        // хеши не совпали — отклоняем промис
+        return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
+      }
+      // аутентификация успешна
+      return res.status(OK).send({ message: 'авторизация прошла успешно' });
+    })
+    .catch((err) => {
+      console.log('errName: ', err.name, ', errMessage: ', err.message);
+      if (err instanceof CastError) {
+        next(new UnauthorizedError('Передан некорректный _id пользователя'));
+      } else {
+        next(err);
+      }
+    });
+};
+
 module.exports = {
   getUsers,
   getUserById,
   createUser,
   updateUser,
   updateAvatar,
+  login,
 };
