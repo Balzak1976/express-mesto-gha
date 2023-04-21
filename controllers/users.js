@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const { handleNotFoundError } = require('../errors/handleNotFoundError');
+const { createToken } = require('../utils/jwt');
 const BadRequestError = require('../errors/BadRequestError');
 const User = require('../models/user');
 
@@ -105,10 +106,11 @@ const login = (req, res, next) => {
 
   User.findUserByCredentials(email, password)
     .then((user) => {
-      console.log('user: ', user);
+      const JWT = createToken({ _id: user.id });
 
-      return res.status(OK).send({ message: 'авторизация прошла успешно' });
+      return res.status(OK).send({ JWT });
     })
+    .then()
     .catch(next);
 };
 
