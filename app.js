@@ -14,14 +14,6 @@ const {
 
 mongoose.connect(MONGO_URL, {});
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '6435395abbde9a409726b391',
-  };
-
-  next();
-});
-
 app.use(routes);
 
 app.listen(PORT, () => {
