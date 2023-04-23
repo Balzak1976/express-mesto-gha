@@ -6,6 +6,7 @@ const Card = require('../models/card');
 
 const { ValidationError, CastError } = mongoose.Error;
 
+const OK = http2.constants.HTTP_STATUS_OK; // 200
 const CREATED = http2.constants.HTTP_STATUS_CREATED; // 201
 
 const getCards = (req, res, next) => {
@@ -33,8 +34,8 @@ const createCard = (req, res, next) => {
 const delCard = (req, res, next) => {
   const { cardId } = req.params;
 
-  Card.findByIdAndRemove(cardId)
-    .then((card) => { handleNotFoundError(card, res, 'Карточка с указанным _id не найдена.'); })
+  Card.delJustOwnCard(cardId, req.user._id)
+    .then((card) => { res.status(OK).send(card); })
     .catch((err) => {
       if (err instanceof CastError) {
         next(new BadRequestError('Передан некорректный _id карточки'));
