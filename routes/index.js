@@ -7,9 +7,9 @@ const { handleNotFoundUrl, handleErrors } = require('../middlewares/errors');
 const auth = require('../middlewares/auth');
 const { createUser, login } = require('../controllers/users');
 
-routes.use(auth);
-routes.post('/signin', express.json(), login);
 routes.post('/signup', express.json(), createUser);
+routes.post('/signin', express.json(), login);
+routes.use(auth);
 routes.use('/users', userRoutes);
 routes.use('/cards', cardsRoutes);
 routes.use(handleNotFoundUrl);

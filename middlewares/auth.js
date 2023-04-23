@@ -5,24 +5,24 @@ const { JsonWebTokenError } = jwt;
 
 const { SECRET_KEY } = process.env;
 
+const extractBearerToken = (header) => header.replace('Bearer ', '');
+
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    throw (new UnauthorizedError('Необходима авторизация 1'));
+    throw (new UnauthorizedError('Необходима авторизация'));
   }
 
-  const token = authorization.replace('Bearer ', '');
+  const token = extractBearerToken(authorization);
   let payload;
 
   try {
-    // eslint-disable-next-line no-unused-vars
     payload = jwt.verify(token, SECRET_KEY);
-    console.log(payload);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     if (err instanceof JsonWebTokenError) {
-      next(new UnauthorizedError('Необходима авторизация 2'));
+      next(new UnauthorizedError('Необходима авторизация'));
     } else {
       next(err);
     }

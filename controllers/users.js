@@ -110,7 +110,6 @@ const login = (req, res, next) => {
 
       return res.status(OK).send({ JWT });
     })
-    .then()
     .catch(next);
 };
 
