@@ -7,7 +7,6 @@ const {
   getCurrentUser,
   getUserById,
   updateUser,
-  updateAvatar,
 } = require('../controllers/users');
 
 userRoutes.get('/', getUsers);
@@ -18,6 +17,6 @@ userRoutes.get('/:userId', getUserById);
 
 userRoutes.patch('/me', express.json(), updateUser);
 
-userRoutes.patch('/me/avatar', express.json(), updateAvatar);
+userRoutes.patch('/me/avatar', express.json(), updateUser);
 
 module.exports = userRoutes;

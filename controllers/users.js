@@ -65,31 +65,8 @@ const createUser = (req, res, next) => {
 
 const updateUser = (req, res, next) => {
   const { _id: id } = req.user;
-  const { name, about } = req.body;
 
-  User.findByIdAndUpdate(
-    id,
-    { name, about },
-    { new: true, runValidators: true },
-  )
-    .then((user) => {
-      handleNotFoundError(user, res, userNotFoundMsg);
-    })
-    .catch((err) => {
-      if (err instanceof ValidationError) {
-        // передаём кастомный message от валидатора mongoose
-        next(new BadRequestError(handlerMsgValidator(err)));
-      } else {
-        next(err);
-      }
-    });
-};
-
-const updateAvatar = (req, res, next) => {
-  const { _id: id } = req.user;
-  const { avatar } = req.body;
-
-  User.findByIdAndUpdate(id, { avatar }, { new: true, runValidators: true })
+  User.findByIdAndUpdate(id, req.body, { new: true, runValidators: true })
     .then((user) => {
       handleNotFoundError(user, res, userNotFoundMsg);
     })
@@ -128,6 +105,5 @@ module.exports = {
   getUserById,
   createUser,
   updateUser,
-  updateAvatar,
   login,
 };
