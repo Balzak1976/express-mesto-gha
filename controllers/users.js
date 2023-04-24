@@ -2,7 +2,7 @@ const http2 = require('node:http2');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-const { handleNotFoundError } = require('../errors/handleNotFoundError');
+const { handleNotFoundError, handlerMsgValidator } = require('../errors/handlers');
 const { createToken } = require('../utils/jwt');
 const BadRequestError = require('../errors/BadRequestError');
 const User = require('../models/user');
@@ -47,7 +47,7 @@ const createUser = (req, res, next) => {
     .catch((err) => {
       if (err instanceof ValidationError) {
         // передаём кастомный message от валидатора mongoose
-        next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        next(new BadRequestError(handlerMsgValidator(err)));
       } else {
         next(err);
       }
@@ -69,7 +69,7 @@ const updateUser = (req, res, next) => {
     .catch((err) => {
       if (err instanceof ValidationError) {
         // передаём кастомный message от валидатора mongoose
-        next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        next(new BadRequestError(handlerMsgValidator(err)));
       } else {
         next(err);
       }
@@ -87,7 +87,7 @@ const updateAvatar = (req, res, next) => {
     .catch((err) => {
       if (err instanceof ValidationError) {
         // передаём кастомный message от валидатора mongoose
-        next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        next(new BadRequestError(handlerMsgValidator(err)));
       } else {
         next(err);
       }
@@ -106,7 +106,7 @@ const login = (req, res, next) => {
     .catch((err) => {
       if (err instanceof ValidationError) {
         // передаём кастомный message от валидатора mongoose
-        next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        next(new BadRequestError(handlerMsgValidator(err)));
       } else {
         next(err);
       }

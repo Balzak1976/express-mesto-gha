@@ -8,13 +8,13 @@ const { Schema, model } = mongoose;
 const cardSchema = new Schema({
   name: {
     type: String,
-    required: true,
+    required: [true, 'Поле названия должно быть заполнено'],
     minlength: [2, 'Название должно быть не короче 2 симв.'],
     maxlength: [30, 'Название должно быть не длиннее 30 симв.'],
   },
   link: {
     type: String,
-    required: true,
+    required: [true, 'Поле URL картинки должно быть заполнено'],
     validate: {
       validator: (v) => validator.isURL(v),
       message: 'Введите URL картинки',

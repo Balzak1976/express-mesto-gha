@@ -8,8 +8,8 @@ const { Schema, model } = mongoose;
 const userSchema = new Schema({
   email: {
     type: String,
-    required: true,
-    unique: true,
+    required: [true, 'Поле email должно быть заполнено'],
+    unique: [true, 'Данный email уже зарегистрирован'],
     validate: {
       validator: (v) => validator.isEmail(v),
       message: 'Поле должно быть валидным email',
@@ -17,7 +17,7 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: [true, 'Поле пароля должно быть заполнено'],
     minlength: [2, 'Пароль должен быть не короче 2 симв.'],
     select: false,
   },

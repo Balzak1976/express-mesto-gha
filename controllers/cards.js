@@ -1,6 +1,6 @@
 const http2 = require('node:http2');
 const mongoose = require('mongoose');
-const { handleNotFoundError } = require('../errors/handleNotFoundError');
+const { handleNotFoundError, handlerMsgValidator } = require('../errors/handlers');
 const BadRequestError = require('../errors/BadRequestError');
 const Card = require('../models/card');
 
@@ -8,6 +8,7 @@ const { ValidationError, CastError } = mongoose.Error;
 
 const OK = http2.constants.HTTP_STATUS_OK; // 200
 const CREATED = http2.constants.HTTP_STATUS_CREATED; // 201
+const cardNotFoundMsg = 'Передан несуществующий _id карточки.';
 
 const getCards = (req, res, next) => {
   Card.find({})
@@ -25,7 +26,7 @@ const createCard = (req, res, next) => {
     .catch((err) => {
       if (err instanceof ValidationError) {
         // передаём кастомный message от валидатора mongoose
-        next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        next(new BadRequestError(handlerMsgValidator(err)));
       } else {
         next(err);
       }
@@ -53,7 +54,7 @@ const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(cardId, { $addToSet: { likes: _id } }, { new: true })
     .populate(['owner', 'likes'])
     .then((card) => {
-      handleNotFoundError(card, res, 'Передан несуществующий _id карточки.');
+      handleNotFoundError(card, res, cardNotFoundMsg);
     })
     .catch((err) => {
       if (err instanceof CastError) {
@@ -71,7 +72,7 @@ const dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(cardId, { $pull: { likes: _id } }, { new: true })
     .populate(['owner', 'likes'])
     .then((card) => {
-      handleNotFoundError(card, res, 'Передан несуществующий _id карточки.');
+      handleNotFoundError(card, res, cardNotFoundMsg);
     })
     .catch((err) => {
       if (err instanceof CastError) {
