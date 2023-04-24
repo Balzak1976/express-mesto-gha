@@ -11,6 +11,7 @@ const { ValidationError, CastError } = mongoose.Error;
 
 const OK = http2.constants.HTTP_STATUS_OK; // 200
 const CREATED = http2.constants.HTTP_STATUS_CREATED; // 201
+const userNotFoundMsg = 'Пользователь по указанному _id не найден.';
 
 const getUsers = (req, res, next) => {
   User.find({})
@@ -22,9 +23,7 @@ const getUserById = (req, res, next) => {
   const { userId } = req.params;
 
   User.findById(userId)
-    .then((user) => {
-      handleNotFoundError(user, res, 'Пользователь по указанному _id не найден.');
-    })
+    .then((user) => { handleNotFoundError(user, res, userNotFoundMsg); })
     .catch((err) => {
       if (err instanceof CastError) {
         next(new BadRequestError('Передан некорректный _id пользователя'));
@@ -46,9 +45,9 @@ const createUser = (req, res, next) => {
     }))
     .then((user) => res.status(CREATED).send(user))
     .catch((err) => {
-      console.log('errName: ', err.name, ', errMessage: ', err.message);
       if (err instanceof ValidationError) {
-        next(new BadRequestError('Переданы некорректные данные при создании пользователя.'));
+        // передаём кастомный message от валидатора mongoose
+        next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
       } else {
         next(err);
       }
@@ -65,15 +64,12 @@ const updateUser = (req, res, next) => {
     { new: true, runValidators: true },
   )
     .then((user) => {
-      handleNotFoundError(
-        user,
-        res,
-        'Пользователь по указанному _id не найден.',
-      );
+      handleNotFoundError(user, res, userNotFoundMsg);
     })
     .catch((err) => {
       if (err instanceof ValidationError) {
-        next(new BadRequestError('Переданы некорректные данные при обновлении профиля.'));
+        // передаём кастомный message от валидатора mongoose
+        next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
       } else {
         next(err);
       }
@@ -86,15 +82,12 @@ const updateAvatar = (req, res, next) => {
 
   User.findByIdAndUpdate(id, { avatar }, { new: true, runValidators: true })
     .then((user) => {
-      handleNotFoundError(
-        user,
-        res,
-        'Пользователь по указанному _id не найден.',
-      );
+      handleNotFoundError(user, res, userNotFoundMsg);
     })
     .catch((err) => {
       if (err instanceof ValidationError) {
-        next(new BadRequestError('Переданы некорректные данные при обновлении аватара.'));
+        // передаём кастомный message от валидатора mongoose
+        next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
       } else {
         next(err);
       }
@@ -110,7 +103,14 @@ const login = (req, res, next) => {
 
       return res.status(OK).send({ JWT });
     })
-    .catch(next);
+    .catch((err) => {
+      if (err instanceof ValidationError) {
+        // передаём кастомный message от валидатора mongoose
+        next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports = {

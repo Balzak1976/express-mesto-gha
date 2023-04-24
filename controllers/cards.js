@@ -24,7 +24,8 @@ const createCard = (req, res, next) => {
     .then((card) => res.status(CREATED).send(card))
     .catch((err) => {
       if (err instanceof ValidationError) {
-        next(new BadRequestError('Переданы некорректные данные при создании карточки.'));
+        // передаём кастомный message от валидатора mongoose
+        next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
       } else {
         next(err);
       }
