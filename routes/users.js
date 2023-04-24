@@ -4,12 +4,15 @@ const userRoutes = express.Router();
 
 const {
   getUsers,
+  getCurrentUser,
   getUserById,
   updateUser,
   updateAvatar,
 } = require('../controllers/users');
 
 userRoutes.get('/', getUsers);
+
+userRoutes.get('/me', getCurrentUser);
 
 userRoutes.get('/:userId', getUserById);
 

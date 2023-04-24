@@ -20,6 +20,12 @@ const getUsers = (req, res, next) => {
     .catch(next);
 };
 
+const getCurrentUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => res.status(OK).send(user))
+    .catch(next);
+};
+
 const getUserById = (req, res, next) => {
   const { userId } = req.params;
 
@@ -118,6 +124,7 @@ const login = (req, res, next) => {
 
 module.exports = {
   getUsers,
+  getCurrentUser,
   getUserById,
   createUser,
   updateUser,
