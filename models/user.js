@@ -9,7 +9,7 @@ const userSchema = new Schema({
   email: {
     type: String,
     required: [true, 'Поле email должно быть заполнено'],
-    unique: [true, 'Данный email уже зарегистрирован'],
+    unique: true,
     validate: {
       validator: (v) => validator.isEmail(v),
       message: 'Поле должно быть валидным email',

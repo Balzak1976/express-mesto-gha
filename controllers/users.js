@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const { handleNotFoundError, handlerMsgValidator } = require('../errors/handlers');
 const { createToken } = require('../utils/jwt');
 const BadRequestError = require('../errors/BadRequestError');
+const ConflictError = require('../errors/ConflictError');
 const User = require('../models/user');
 
 const { ValidationError, CastError } = mongoose.Error;
@@ -48,6 +49,8 @@ const createUser = (req, res, next) => {
       if (err instanceof ValidationError) {
         // передаём кастомный message от валидатора mongoose
         next(new BadRequestError(handlerMsgValidator(err)));
+      } else if (err.code === 11000) {
+        next(new ConflictError('Данный email уже зарегистрирован'));
       } else {
         next(err);
       }
