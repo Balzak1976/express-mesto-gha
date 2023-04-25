@@ -3,7 +3,7 @@ const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const { JsonWebTokenError } = jwt;
 
-const { SECRET_KEY } = process.env;
+const { SECRET_KEY = 'some-secret-key' } = process.env;
 
 const extractBearerToken = (header) => header.replace('Bearer ', '');
 
