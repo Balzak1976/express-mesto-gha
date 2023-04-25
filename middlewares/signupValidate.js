@@ -1,5 +1,7 @@
 const { celebrate, Joi } = require('celebrate');
 
+const pwdRegExp = /^[!-z]{8,30}$/;
+
 // registration
 module.exports = celebrate({
   body: Joi.object().keys({
@@ -7,11 +9,11 @@ module.exports = celebrate({
       .messages({
         'string.email': 'Поле должно быть валидным email',
       }),
-    password: Joi.string().min(8).required().alphanum()
+    password: Joi.string().min(8).required().pattern(pwdRegExp)
+      .message('Поле пароля должно содержать a-z, A-Z, и 0-9')
       .messages({
         'string.min': 'Пароль должен быть не короче 8 симв.',
         'string.empty': 'Поле пароля должно быть заполнено',
-        'string.alphanum': 'Поле пароля должно содержать a-z, A-Z, and 0-9',
       }),
     name: Joi.string().min(2).max(30)
       .messages({
