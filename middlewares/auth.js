@@ -29,7 +29,6 @@ module.exports = (req, res, next) => {
   }
   // req.user = { _id: '6435395abbde9a409726b391' };
   req.user = payload;
-  // console.log('payload: ', payload);
 
   next();
 };

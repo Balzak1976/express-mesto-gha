@@ -8,7 +8,7 @@ module.exports = celebrate({
         'string.empty': 'Поле email должно быть заполнено',
         'string.email': 'Поле должно быть валидным email',
       }),
-    password: Joi.string().min(8).required().alphanum()
+    password: Joi.string().min(2).required().alphanum()
       .messages({
         'string.min': 'Пароль должен быть не короче 8 симв.',
         'string.empty': 'Поле пароля должно быть заполнено',
