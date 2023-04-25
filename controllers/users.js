@@ -50,7 +50,11 @@ const createUser = (req, res, next) => {
     .then((hash) => User.create({
       email, password: hash, name, about, avatar,
     }))
-    .then((user) => res.status(CREATED).send(user))
+    .then((user) => {
+      const userNoPassword = user.toObject();
+      delete userNoPassword.password;
+      res.status(CREATED).send(userNoPassword);
+    })
     .catch((err) => {
       if (err instanceof ValidationError) {
         // передаём кастомный message от валидатора mongoose
