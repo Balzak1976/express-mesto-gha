@@ -18,26 +18,23 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: [true, 'Поле пароля должно быть заполнено'],
-    minlength: [2, 'Пароль должен быть не короче 2 симв.'],
+    minlength: [8, 'Пароль должен быть не короче 8 симв.'],
     select: false,
   },
   name: {
     type: String,
-    required: false,
     minlength: [2, 'Имя должно быть не короче 2 симв.'],
     maxlength: [30, 'Имя должно быть не длиннее 30 симв.'],
     default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
-    required: false,
     minlength: [2, 'Текст о себе должен быть не короче 2 симв.'],
     maxlength: [30, 'Текст о себе должен быть не длиннее 30 симв.'],
     default: 'Исследователь',
   },
   avatar: {
     type: String,
-    required: false,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator: (v) => validator.isURL(v),
