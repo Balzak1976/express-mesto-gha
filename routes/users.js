@@ -1,6 +1,6 @@
 const express = require('express');
 
-const userValidate = require('../middlewares/userValidate');
+const { userUpdateValidate, userIdValidate } = require('../middlewares/userValidate');
 
 const userRoutes = express.Router();
 
@@ -11,14 +11,14 @@ const {
   updateUser,
 } = require('../controllers/users');
 
-userRoutes.get('/', userValidate, getUsers);
+userRoutes.get('/', getUsers);
 
-userRoutes.get('/me', userValidate, getCurrentUser);
+userRoutes.get('/me', getCurrentUser);
 
-userRoutes.get('/:userId', userValidate, getUserById);
+userRoutes.get('/:userId', userIdValidate, getUserById);
 
-userRoutes.patch('/me', express.json(), userValidate, updateUser);
+userRoutes.patch('/me', express.json(), userUpdateValidate, updateUser);
 
-userRoutes.patch('/me/avatar', express.json(), userValidate, updateUser);
+userRoutes.patch('/me/avatar', express.json(), userUpdateValidate, updateUser);
 
 module.exports = userRoutes;

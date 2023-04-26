@@ -2,7 +2,7 @@ const { celebrate, Joi } = require('celebrate');
 
 const { passRegExp, urlRegExp } = require('../utils/regExp');
 
-module.exports = celebrate({
+const userValidate = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email()
       .messages({
@@ -28,3 +28,26 @@ module.exports = celebrate({
       .message('Введите URL аватара'),
   }),
 });
+
+const userUpdateValidate = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30)
+      .messages({
+        'string.min': 'Имя должно быть не короче 2 симв.',
+        'string.max': 'Имя должно быть не длиннее 30 симв.',
+      }),
+    about: Joi.string().min(2).max(30)
+      .messages({
+        'string.min': 'Текст о себе должен быть не короче 2 симв.',
+        'string.max': 'Текст о себе должен быть не длиннее 30 симв.',
+      }),
+    avatar: Joi.string().pattern(urlRegExp)
+      .message('Введите URL аватара'),
+  }),
+});
+
+const userIdValidate = celebrate({
+  params: Joi.object().keys({ userId: Joi.string().alphanum().length(24) }),
+});
+
+module.exports = { userValidate, userUpdateValidate, userIdValidate };
