@@ -1,15 +1,23 @@
 const mongoose = require('mongoose');
 const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
+const { urlRegExp } = require('../utils/regExp');
 
 const { Schema, model } = mongoose;
 
 const cardSchema = new Schema({
   name: {
     type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 30,
   },
   link: {
     type: String,
+    required: true,
+    validate: {
+      validator: (v) => urlRegExp.test(v),
+    },
   },
   owner: {
     type: Schema.Types.ObjectId,
