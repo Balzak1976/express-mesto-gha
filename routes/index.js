@@ -6,7 +6,7 @@ const { createUser, login } = require('../controllers/users');
 const userRoutes = require('./users');
 const cardsRoutes = require('./cards');
 
-const signupValidate = require('../middlewares/signupValidate');
+const userValidate = require('../middlewares/userValidate');
 const signinValidate = require('../middlewares/signinValidate');
 const auth = require('../middlewares/auth');
 const { handleNotFoundUrl, handleErrors } = require('../middlewares/errors');
@@ -14,7 +14,7 @@ const { handleNotFoundUrl, handleErrors } = require('../middlewares/errors');
 // ==========================================================================
 
 // registration route
-routes.post('/signup', express.json(), signupValidate, createUser);
+routes.post('/signup', express.json(), userValidate, createUser);
 // authorization route
 routes.post('/signin', express.json(), signinValidate, login);
 routes.use(auth);
