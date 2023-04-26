@@ -12,7 +12,7 @@ const handleErrors = (err, req, res, next) => {
 
   res.status(statusCode).send({
     message: statusCode === SERVER_ERROR
-      ? `На сервере произошла ошибка ${err}`
+      ? 'На сервере произошла ошибка'
       : message,
   });
 

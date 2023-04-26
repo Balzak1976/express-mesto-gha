@@ -1,10 +1,6 @@
 const http2 = require('node:http2');
-const mongoose = require('mongoose');
-const { handleNotFoundError, handlerMsgValidator } = require('../errors/handlers');
-const BadRequestError = require('../errors/BadRequestError');
+const { handleNotFoundError } = require('../errors/handlers');
 const Card = require('../models/card');
-
-const { ValidationError, CastError } = mongoose.Error;
 
 const OK = http2.constants.HTTP_STATUS_OK; // 200
 const CREATED = http2.constants.HTTP_STATUS_CREATED; // 201
@@ -23,14 +19,7 @@ const createCard = (req, res, next) => {
 
   Card.create({ owner, name, link })
     .then((card) => res.status(CREATED).send(card))
-    .catch((err) => {
-      if (err instanceof ValidationError) {
-        // передаём кастомный message от валидатора mongoose
-        next(new BadRequestError(handlerMsgValidator(err)));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 const delCard = (req, res, next) => {
@@ -38,13 +27,7 @@ const delCard = (req, res, next) => {
 
   Card.delJustOwnCard(cardId, req.user._id)
     .then((card) => { res.status(OK).send(card); })
-    .catch((err) => {
-      if (err instanceof CastError) {
-        next(new BadRequestError('Передан некорректный _id карточки'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 const likeCard = (req, res, next) => {
@@ -56,13 +39,7 @@ const likeCard = (req, res, next) => {
     .then((card) => {
       handleNotFoundError(card, res, cardNotFoundMsg);
     })
-    .catch((err) => {
-      if (err instanceof CastError) {
-        next(new BadRequestError('Переданы некорректные данные для постановки лайка.'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 const dislikeCard = (req, res, next) => {
@@ -74,13 +51,7 @@ const dislikeCard = (req, res, next) => {
     .then((card) => {
       handleNotFoundError(card, res, cardNotFoundMsg);
     })
-    .catch((err) => {
-      if (err instanceof CastError) {
-        next(new BadRequestError('Переданы некорректные данные для снятия лайка.'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 module.exports = {

@@ -11,6 +11,4 @@ const handleNotFoundError = (data, res, message) => {
   }
 };
 
-const handlerMsgValidator = (err) => `${Object.values(err.errors).map((error) => error.message).join(', ')}`;
-
-module.exports = { handleNotFoundError, handlerMsgValidator };
+module.exports = { handleNotFoundError };

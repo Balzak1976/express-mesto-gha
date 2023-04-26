@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
 const bcrypt = require('bcrypt');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
@@ -8,38 +7,23 @@ const { Schema, model } = mongoose;
 const userSchema = new Schema({
   email: {
     type: String,
-    required: [true, 'Поле email должно быть заполнено'],
     unique: true,
-    validate: {
-      validator: (v) => validator.isEmail(v),
-      message: 'Поле должно быть валидным email',
-    },
   },
   password: {
     type: String,
-    required: [true, 'Поле пароля должно быть заполнено'],
-    minlength: [8, 'Пароль должен быть не короче 8 симв.'],
     select: false,
   },
   name: {
     type: String,
-    minlength: [2, 'Имя должно быть не короче 2 симв.'],
-    maxlength: [30, 'Имя должно быть не длиннее 30 симв.'],
     default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
-    minlength: [2, 'Текст о себе должен быть не короче 2 симв.'],
-    maxlength: [30, 'Текст о себе должен быть не длиннее 30 симв.'],
     default: 'Исследователь',
   },
   avatar: {
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
-    validate: {
-      validator: (v) => validator.isURL(v),
-      message: 'Введите URL аватара',
-    },
   },
 }, { versionKey: false });
 

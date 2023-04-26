@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
 const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
 
@@ -8,17 +7,9 @@ const { Schema, model } = mongoose;
 const cardSchema = new Schema({
   name: {
     type: String,
-    required: [true, 'Поле названия должно быть заполнено'],
-    minlength: [2, 'Название должно быть не короче 2 симв.'],
-    maxlength: [30, 'Название должно быть не длиннее 30 симв.'],
   },
   link: {
     type: String,
-    required: [true, 'Поле URL картинки должно быть заполнено'],
-    validate: {
-      validator: (v) => validator.isURL(v),
-      message: 'Введите URL картинки',
-    },
   },
   owner: {
     type: Schema.Types.ObjectId,
