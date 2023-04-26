@@ -17,7 +17,7 @@ const userLoginValidate = celebrate({
   }),
 });
 
-const userValidate = celebrate({
+const userCreateValidate = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email()
       .messages({
@@ -66,5 +66,5 @@ const userIdValidate = celebrate({
 });
 
 module.exports = {
-  userLoginValidate, userValidate, userUpdateValidate, userIdValidate,
+  userLoginValidate, userCreateValidate, userUpdateValidate, userIdValidate,
 };

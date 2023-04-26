@@ -10,7 +10,7 @@ const cardValidate = celebrate({
         'string.max': 'Название должно быть не длиннее 30 симв.',
         'string.empty': 'Поле "name" должно быть заполнено',
       }),
-    link: Joi.string().pattern(urlRegExp)
+    link: Joi.string().required().pattern(urlRegExp)
       .message('Введите URL места')
       .messages({
         'string.empty': 'Поле "link" должно быть заполнено',
