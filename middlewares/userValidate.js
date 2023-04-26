@@ -2,6 +2,21 @@ const { celebrate, Joi } = require('celebrate');
 
 const { passRegExp, urlRegExp } = require('../utils/regExp');
 
+const userLoginValidate = celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email()
+      .messages({
+        'string.empty': 'Поле email должно быть заполнено',
+        'string.email': 'Поле должно быть валидным email',
+      }),
+    password: Joi.string().min(8).required()
+      .messages({
+        'string.min': 'Пароль должен быть не короче 8 симв.',
+        'string.empty': 'Поле пароля должно быть заполнено',
+      }),
+  }),
+});
+
 const userValidate = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email()
@@ -50,4 +65,6 @@ const userIdValidate = celebrate({
   params: Joi.object().keys({ userId: Joi.string().alphanum().length(24) }),
 });
 
-module.exports = { userValidate, userUpdateValidate, userIdValidate };
+module.exports = {
+  userLoginValidate, userValidate, userUpdateValidate, userIdValidate,
+};
