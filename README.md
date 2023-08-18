@@ -1,17 +1,46 @@
-[![Tests](../../actions/workflows/tests-13-sprint.yml/badge.svg)](../../actions/workflows/tests-13-sprint.yml) [![Tests](../../actions/workflows/tests-14-sprint.yml/badge.svg)](../../actions/workflows/tests-14-sprint.yml)
-# Проект Mesto фронтенд + бэкенд
+# Проект Mesto бэкенд
 
+## Описание и функциональность проекта
 
-## Проектная работа №13
+### Backend
 
-1. Написан основной функционал сервера на Express.
+- Написан основной функционал сервера на Express
+- Сделано подключение сервера к базе данных MongoDB
+- Использован пакет Mogoose, который обеспечивает правильную структуру документов в БД и позволяет их валидировать во время добавления и обновления данных
+- Настроена обработка ошибок сервера ( 400, 404, 500 )
 
-2. Сделано подключение сервера к базе данных MongoDB.
+## Стэк технологий
 
-3. Использован пакет Mogoose, который обеспечивает правильную структуру документов в БД и позволяет их валидировать во время добавления и обновления данных.
+| <a href="https://expressjs.com/" target="_blank"><img style="margin: 10px" src="https://profilinator.rishav.dev/skills-assets/express-original-wordmark.svg" alt="Express.js" height="45" /></a> | <a href="https://nodejs.org/" target="_blank"><img style="margin: 10px" src="https://profilinator.rishav.dev/skills-assets/nodejs-original-wordmark.svg" alt="Node.js" height="45" /></a> | <a href="https://www.mongodb.com/" target="_blank"><img style="margin: 10px" src="https://profilinator.rishav.dev/skills-assets/mongodb-original-wordmark.svg" alt="MongoDB" height="45" /></a> |
+| :---: | :---: | :---: |
+| Express | Node.js | MongoDB |
 
-4. Настроена обработка ошибок сервера ( 400, 404, 500 ).
+<br>
 
->
-***
-[**Ссылка на проект для просмотра**](https://github.com/Balzak1976/express-mesto-gha)
+## Запуск проекта в режиме production
+
+клонировать репозиторий 
+
+```javascript
+git clone https://github.com/Balzak1976/express-mesto-gha.git
+```
+
+установить зависимости
+
+```javascript
+npm ci
+```
+
+создать файл `.env` в корне проекта
+
+```javascript
+PORT = 3000;
+MONGO_URL = "mongodb://0.0.0.0:27017/mestodb";
+SECRET_KEY = "some-secret-key";
+```
+
+запустить
+
+```javascript
+npm run start
+```
